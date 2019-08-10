@@ -1,4 +1,5 @@
 const argv = require('webpack-nano/argv');
+const Critters = require('critters-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpackMerge = require('webpack-merge');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
@@ -24,7 +25,12 @@ module.exports = () => {
         new CopyWebpackPlugin(
           [{ from: 'src/img', to: 'img/' }, 'src/manifest.webmanifest'],
           { ignore: ['.DS_Store'] }
-        )
+        ),
+        new Critters({
+          noscriptFallback: true,
+          preload: 'swap',
+          preloadFonts: true
+        }),
       ],
       stats: 'minimal'
     },
