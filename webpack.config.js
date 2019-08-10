@@ -1,25 +1,22 @@
 const argv = require('webpack-nano/argv');
-const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpackMerge = require('webpack-merge');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const WebpackBar = require('webpackbar');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
-const { mode, presets } = argv;
-console.log(argv)
-const modeConfig = require(`./build-utils/webpack.${mode}.js`);
+const modeConfig = require(`./build-utils/webpack.${argv.mode}.js`);
 const loadPresets = require('./build-utils/loadPresets');
 
-module.exports = ({ mode, presets }) => {
+module.exports = () => {
   return webpackMerge(
     {
       entry: {
         app: ['./src/index.js']
       },   
-      mode,
       plugins: [
+        new WebpackBar(),
         new CleanWebpackPlugin(),
-        new webpack.ProgressPlugin(),
         new HtmlWebpackPlugin({
           filename: 'index.html',
           template: './src/index.html'
@@ -28,9 +25,10 @@ module.exports = ({ mode, presets }) => {
           [{ from: 'src/img', to: 'img/' }, 'src/manifest.webmanifest'],
           { ignore: ['.DS_Store'] }
         )
-      ]
+      ],
+      stats: 'minimal'
     },
-    modeConfig({ mode, presets }),
-    loadPresets({ mode, presets })
+    modeConfig(argv),
+    loadPresets(argv)
   );
 };

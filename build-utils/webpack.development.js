@@ -1,3 +1,4 @@
+const fs = require('fs');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const { WebpackPluginServe: Serve } = require('webpack-plugin-serve');
 
@@ -18,9 +19,20 @@ module.exports = () => ({
     new CopyWebpackPlugin(['src/sw.js']),
     new Serve({
       host: 'localhost',
-      static: ['./'],
+      port: 8080,
+      hmr: true,
+      // http2: {
+      //   key: fs.readFileSync('./build-utils/certificates/server.key'),
+      //   cert: fs.readFileSync('./build-utils/certificates/server.cert')
+      // }, 
+      https: {
+        key: fs.readFileSync('./build-utils/certificates/server.key'),
+        cert: fs.readFileSync('./build-utils/certificates/server.cert')
+      },
       open: true,
-      liveReload: true
+      liveReload: true,
+      ramdisk: true,
+      static: ['./dist'],
     })
   ],
   mode: 'development',
